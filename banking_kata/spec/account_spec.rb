@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'banking'
+require 'account'
 
 describe Account do
   let(:account) { subject }
