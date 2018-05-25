@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'fizz_buzz'
+require 'game'
 
 describe 'FizzBuzz' do
   it 'is a Fizz and Buzz' do
