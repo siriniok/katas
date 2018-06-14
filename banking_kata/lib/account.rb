@@ -12,6 +12,9 @@ end
 class Account
   NO_RECORDS_MESSAGE     = "No Records Found\n"
   STATEMENT_TABLE_HEADER = %w(Date Amount Balance)
+  STATEMENT_FORMAT_RULES = [
+    :format_date_column, :format_amount_column, :format_balance_column
+  ]
 
   attr_reader :balance, :transaction_records
 
@@ -58,15 +61,18 @@ class Account
     nil
   end
 
-  def generate_statement
-    return NO_RECORDS_MESSAGE if transaction_count == 0
+  def generate_statement(header=STATEMENT_TABLE_HEADER,
+                         no_records=NO_RECORDS_MESSAGE)
+    return no_records if transaction_count == 0
 
-    generate_statement_table
+    generate_statement_table(header)
   end
 
-  def generate_statement_table
+  def generate_statement_table(header)
     table = [STATEMENT_TABLE_HEADER] + transaction_records
-    table = process_columns(table) { |columns| format_columns(columns) }
+    table = process_columns(table) do |columns|
+      format_columns(columns, STATEMENT_FORMAT_RULES)
+    end
     table.map { |c| c.join('  ') }.join("\n") + "\n"
   end
 
@@ -76,11 +82,8 @@ class Account
     formatted_columns.transpose
   end
 
-  def format_columns(columns)
-    columns[0] = format_date_column(columns[0])
-    columns[1] = format_amount_column(columns[1])
-    columns[2] = format_balance_column(columns[2])
-    columns
+  def format_columns(columns, rules)
+    columns.each_with_index.map { |c, i| self.send(rules[i], c) }
   end
 
   def format_date_column(col)
