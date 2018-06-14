@@ -85,7 +85,7 @@ describe Account do
       end
 
       it 'stores new records about transactions' do
-        deposit_amount  = rand(1..1000)
+        deposit_amount  = rand(100..1000)
         withdraw_amount = rand(1..100)
         current_date    = Date.today
 
